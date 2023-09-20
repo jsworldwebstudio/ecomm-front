@@ -1,6 +1,7 @@
-import type { Config } from 'tailwindcss'
+/** @type {import('tailwindcss').Config} */
+const defaultTheme = require("tailwindcss/defaultTheme");
 
-const config: Config = {
+module.exports = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,13 +9,22 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        poppins: ['var(--font-poppins)', ...defaultTheme.fontFamily.sans],
+        montserrat: ['var(--font-montserrat)', ...defaultTheme.fontFamily.sans],
+      },
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        "primary-gradient":
+          "linear-gradient(180.96deg, #000000 0.82%, #4A2800 129.1%)",
+      },
+      colors: {
+        primary: {
+          light: "#FCC182",
+          DEFAULT: "#FA9021",
+          dark: "#AF5B04",
+        },
       },
     },
   },
   plugins: [],
-}
-export default config
+};
