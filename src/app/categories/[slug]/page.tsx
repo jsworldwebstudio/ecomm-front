@@ -15,8 +15,6 @@ const GameCategory: NextPage<GameCategoryProps> = async (props) => {
 
   const games = await getCategoryGames(slug);
   const { subtitle } = await getCategory(slug);
-  console.log("Category Page slug = ", slug);
-  console.log("Category Page Games = ", games);
 
   return (
     <>

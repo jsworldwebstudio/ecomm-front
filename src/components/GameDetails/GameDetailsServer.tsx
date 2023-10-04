@@ -1,22 +1,15 @@
-// import { getGame } from "@/libs/apis";
-import { NextPage } from "next";
+import { getGame } from "@/libs/apis";
 
-interface GameDetailsServerProps {
-  gameName: string;
-  gamePrice: number;
-  gameDescription: string;
-}
+const GameDetailsServer: any = async (props: { slug: string }) => {
+  const { slug } = props;
 
-const GameDetailsServer: NextPage<GameDetailsServerProps> = (props) => {
-  const { gameName, gamePrice, gameDescription } = props;
-
-  // const gameDetails = await getGame(slug);
+  const gameDetails = await getGame(slug);
 
   return (
     <>
-      <h2 className={classNames.name}>{gameName}</h2>
-      <p className={classNames.price}>$ {gamePrice}</p>
-      <h2 className={classNames.description}>{gameDescription}</h2>
+      <h2 className={classNames.name}>{gameDetails.name}</h2>
+      <p className={classNames.price}>$ {gameDetails.price}</p>
+      <h2 className={classNames.description}>{gameDetails.description}</h2>
     </>
   );
 };

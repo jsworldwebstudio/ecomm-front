@@ -1,58 +1,58 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import CarouselSlider from "@/components/CarouselSlider/CarouselSlider";
+import { useAppDispatch } from "@/hooks/storeHook";
+import { addItemToCart } from "@/redux/features/cartSlice";
+import { Game } from "@/models/game";
+import { getGame } from "@/libs/apis";
 
-interface GameDetailsClientProps {
-  gamePrice: number;
-  gameQuantity: number;
-  gameImages: { _key: string; url: string; }[];
+const GameDetailsClient = (props: {
+  slug: string;
   children: React.ReactNode;
-}
-
-const GameDetailsClient: FC<GameDetailsClientProps> = (props) => {
-  const { gamePrice, gameQuantity, gameImages, children } = props;
+}) => {
+  const { slug, children } = props;
 
   const [quantity, setQuantity] = useState(0);
   const [price, setPrice] = useState(0);
-  const [gameDetails, setGameDetails] = useState<boolean>(false);
+  const [gameDetails, setGameDetails] = useState<Game>();
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchGameDetails = async () => {
-      if (gameImages !== null) {
-        setGameDetails(true);
-      } else {
-        setGameDetails(false);
-      };
+      const game = await getGame(slug);
+      setGameDetails(game);
     };
 
     fetchGameDetails();
-  }, [gameImages]);
+  }, [slug]);
 
   const handleDecrease = () => {
     if (!gameDetails) return;
     if (quantity > 0) {
       setQuantity(quantity - 1);
-      setPrice(Number(((quantity - 1) * gamePrice).toFixed(2)));
+      setPrice(Number(((quantity - 1) * gameDetails.price).toFixed(2)));
     }
   };
 
   const handleIncrease = () => {
     if (!gameDetails) return;
-    if (quantity < gameQuantity) {
+    if (quantity < gameDetails.quantity) {
       setQuantity(quantity + 1);
-      setPrice(Number(((quantity + 1) * gamePrice).toFixed(2)));
+      setPrice(Number(((quantity + 1) * gameDetails.price).toFixed(2)));
     }
   };
 
   const handleAddToCart = () => {
     if (!gameDetails) return;
+    dispatch(addItemToCart({ ...gameDetails, quantity }));
   };
 
   return (
     <div>
-      {gameDetails && <CarouselSlider images={gameImages} />}
+      {gameDetails && <CarouselSlider images={gameDetails.images} />}
 
       <div className={classNames.container}>
         <div className={classNames.productInfo}>
@@ -76,9 +76,9 @@ const GameDetailsClient: FC<GameDetailsClientProps> = (props) => {
               <button
                 onClick={handleIncrease}
                 className={`${classNames.button} ${
-                  quantity === gameQuantity && classNames.disabledButton
+                  quantity === gameDetails.quantity && classNames.disabledButton
                 }`}
-                disabled={quantity === gameQuantity}
+                disabled={quantity === gameDetails.quantity}
               >
                 +
               </button>
